@@ -21,7 +21,7 @@ public class SavingsAccount extends AbstractBankAccount {
         return ownerName;
     }
     /**
-     * Main Function.
+     * Main Function passed pear review.
      * @param args
      */
     public static void main(final String[] args) {
