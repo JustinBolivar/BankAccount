@@ -1,10 +1,13 @@
 package com.bank;
 
+import java.util.List;
+
 public class SavingsAccount extends AbstractBankAccount {
     /**
      * ownerName field to store the name of the account owner.
      */
     private String ownerName;
+
     /**
      * Savings Account constructor to set the owner.
      * @param name
@@ -13,6 +16,7 @@ public class SavingsAccount extends AbstractBankAccount {
         super();
         this.ownerName = name;
     }
+
     /**
      * getOwnerName method to get the account owner name.
      * @return ownerName
@@ -20,32 +24,53 @@ public class SavingsAccount extends AbstractBankAccount {
     public String getOwnerName() {
         return ownerName;
     }
+
+    private static void performBankAction(final Runnable action) {
+        try {
+            action.run();
+        } catch (InvalidAmountException | AccountFrozenException
+                | InsufficientFundsException | NullPointerException e) {
+            e.printStackTrace();
+        }
+        System.out.println("----------------------------------------");
+    }
+
     /**
-     * Main Function passed pear review.
+     * Main function to test and run program.
      * @param args
      */
     public static void main(final String[] args) {
+        BankAccountManager manager = new BankAccountManager();
+        final int num1 = 1000;
+        final int num2 = 500;
+        final int num3 = 1500;
+        final int num4 = 100;
         SavingsAccount acc = new SavingsAccount("Justin Antonio Bolivar");
-        System.out.println(acc.getOwnerName());
-        final int a = 1000;
-        final int b = 0;
-        final int c = -500;
-        final int d = 500;
-        final int e = -100;
-        final int f = 11500;
-        final int g = 100;
-        acc.deposit(a);
-        acc.deposit(b);
-        acc.deposit(c);
-        acc.withdraw(d);
-        acc.withdraw(a + d);
-        acc.withdraw(e);
-        acc.freezeAccount();
-        acc.deposit(f);
-        acc.withdraw(d);
-        acc.unFreezeAccount();
-        acc.withdraw(g);
-        System.out.println(acc.isAccountFrozen());
-        System.out.println(acc.getBalance());
+        manager.addAccount(acc);
+        performBankAction(() -> acc.deposit(num1));
+        performBankAction(() -> acc.deposit(0));
+        performBankAction(() -> acc.withdraw(num2));
+        performBankAction(() -> acc.deposit(-num2));
+        performBankAction(() -> acc.withdraw(num3));
+        performBankAction(() -> acc.withdraw(-num4));
+        performBankAction(() -> acc.freezeAccount());
+        performBankAction(() -> acc.deposit(num2));
+        performBankAction(() -> acc.withdraw(num2));
+        performBankAction(() -> acc.unFreezeAccount());
+        performBankAction(() -> acc.withdraw(num4));
+        performBankAction(() -> acc.getBalance());
+
+        List<Transaction> filtered = manager.filterTransactionsAbove(num2,
+                acc.getTransactionHistory());
+        filtered.forEach(f -> System.out.println(f));
+        System.out.println("----------------------------------------");
+        List<Transaction> sort = manager
+                .sortTransactionsByAmount(acc.getTransactionHistory());
+        sort.forEach(s -> System.out.println(s));
+        System.out.println("----------------------------------------");
+        performBankAction(() -> manager.getAccount(2));
+        manager.listAccounts();
+        
+        
     }
 }
