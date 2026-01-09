@@ -60,13 +60,15 @@ public class BankAccountManager {
      * @return FilteredList of transactions
      */
     List<Transaction> filterTransactionsAbove(final double amount,
-            final List<Transaction> txList) throws InvalidAmountException {
+            final List<Transaction> txList) throws InvalidAmountException, NullPointerException {
         if (amount <= 0) {
             throw new InvalidAmountException(
                     "The deposit amount must be a valid amount "
                     + "greater than zero. Received: "
                             + amount);
-        } else {
+        } else if (txList == null){
+            throw new NullPointerException("The Transaction List is null");
+        }else {
             return txList.stream()
                     .filter(tx -> tx.getAmount() >= amount)
                     .collect(Collectors.toList());

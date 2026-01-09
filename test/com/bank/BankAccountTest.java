@@ -24,7 +24,7 @@ class BankAccountTest {
     }
 
     @Test
-    void testDeposit_ValidAmount()
+    void testDeposit_ValidAmount_ShouldReturnTrue()
             throws InvalidAmountException, AccountFrozenException {
         acc.deposit(1000);
         assertTrue(outputStreamCaptor.toString()
@@ -41,7 +41,7 @@ class BankAccountTest {
     }
 
     @Test
-    void testWithdraw_SufficientFunds() throws Exception {
+    void testWithdraw_SufficientFunds_ShouldReturnTrue() throws Exception {
         acc.deposit(1000);
         acc.withdraw(500);
         assertTrue(
@@ -65,7 +65,7 @@ class BankAccountTest {
     }
 
     @Test
-    void testFreezeAccount_DepositFails() {
+    void testFreezeAccount_DepositWhileFrozen_ShouldReturnTrue() {
         acc.freezeAccount();
         AccountFrozenException ex = assertThrows(AccountFrozenException.class,
                 () -> acc.deposit(11500));
@@ -74,7 +74,7 @@ class BankAccountTest {
     }
 
     @Test
-    void testWithdraw_WhenFrozen_ThrowsException() throws Exception {
+    void testWithdraw_WithdrawWhenFrozen_ThrowsException() throws Exception {
         acc.deposit(1000);
         acc.freezeAccount();
 
@@ -85,7 +85,8 @@ class BankAccountTest {
     }
 
     @Test
-    void testUnfreezeAndWithdraw_Success() throws Exception {
+    void testUnfreezeAndWithdraw_WithdrawAmountAfterUnFreeze_ShouldReturnTrue()
+            throws Exception {
         acc.deposit(1000);
         acc.freezeAccount();
         acc.unFreezeAccount();
@@ -115,14 +116,14 @@ class BankAccountTest {
     }
 
     @Test
-    void testGetAccount_ValidId_ShouldReturnAccount() {
+    void testGetAccount_RetrieveValidId_ShouldReturnAccount() {
         manager.addAccount(acc);
         BankAccount retrievedAccount = manager.getAccount(1);
         assertNotNull(retrievedAccount);
     }
 
     @Test
-    void testGetAccount_InvalidId_ShouldThrowException() {
+    void testGetAccount_RetreiveInvalidId_ShouldThrowException() {
         NullPointerException ex = assertThrows(NullPointerException.class,
                 () -> {
                     manager.getAccount(999);
@@ -131,30 +132,22 @@ class BankAccountTest {
     }
 
     @Test
-    void testFilterTransactionsAbove_ValidAmount_ShouldReturnFilteredList()
+    void testFilterTransactionsAbove_RetrieveValidAmount_ShouldReturnFilteredList()
             throws InvalidAmountException {
-        // Setup dummy transactions
         java.util.List<Transaction> history = java.util.Arrays.asList(
                 new Transaction("Deposit", 100.0),
                 new Transaction("Deposit", 500.0),
                 new Transaction("Withdraw", 50.0));
-
-        // Filter for transactions >= 100
         java.util.List<Transaction> result = manager
                 .filterTransactionsAbove(100.0, history);
-
-        // Assertions
         assertEquals(2, result.size(), "Should find 2 transactions >= 100");
         assertTrue(result.stream().allMatch(t -> t.getAmount() >= 100.0));
     }
 
     @Test
-    void testFilterTransactionsAbove_InvalidAmount_ShouldThrowException() {
-        // Setup dummy transactions
+    void testFilterTransactionsAbove_RetrieveInvalidAmount_ShouldThrowException() {
         java.util.List<Transaction> history = java.util.Arrays
                 .asList(new Transaction("Deposit", 100.0));
-
-        // Assert that passing -50.0 throws InvalidAmountException
         InvalidAmountException ex = assertThrows(InvalidAmountException.class,
                 () -> {
                     manager.filterTransactionsAbove(-50.0, history);
@@ -162,6 +155,19 @@ class BankAccountTest {
 
         assertTrue(ex.getMessage().contains("greater than zero"),
                 "Error message should mention amount rules");
+    }
+    
+    @Test
+    void testFilterTransactionsAbove_GiveNull_ShouldThrowException() {
+        java.util.List<Transaction> history = java.util.Arrays
+                .asList(new Transaction("Deposit", 100.0));
+        NullPointerException ex = assertThrows(NullPointerException.class,
+                () -> {
+                    manager.filterTransactionsAbove(500.0, null);
+                });
+
+        assertTrue(ex.getMessage().contains("The Transaction List is null"),
+                "List should ot be Null");
     }
 
     @Test
@@ -189,7 +195,7 @@ class BankAccountTest {
     }
 
     @Test
-    void testSortTransactionsByAmount_ShouldReturnSortedList() {
+    void testSortTransactionsByAmount_MakeTransactionsThenCompare_ShouldReturnSortedList() {
         java.util.List<Transaction> unsorted = java.util.Arrays.asList(
                 new Transaction("Deposit", 500.0),
                 new Transaction("Withdraw", 50.0),
