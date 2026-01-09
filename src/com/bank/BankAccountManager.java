@@ -70,7 +70,7 @@ public class BankAccountManager {
             return txList.stream()
                     .filter(tx -> tx.getAmount() >= amount)
                     .collect(Collectors.toList());
-        } 
+        }
     }
     /**
      * sortTransactionsByAmount function to sort transaction list.

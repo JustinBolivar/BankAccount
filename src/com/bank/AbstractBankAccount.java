@@ -73,7 +73,7 @@ public abstract class AbstractBankAccount implements BankAccount {
         }
 
         balance -= amount;
-        transactionHistory.add(new Transaction("Withdrawal", amount));
+        transactionHistory.add(new Transaction("Withdraw", amount));
         System.out.println("Withdrawn: Php " + amount);
     }
 

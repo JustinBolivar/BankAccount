@@ -24,7 +24,11 @@ public class SavingsAccount extends AbstractBankAccount {
     public String getOwnerName() {
         return ownerName;
     }
-
+    /**
+     * Helper function to print the error message without
+     * stopping the main function from continuing.
+     * @param action
+     */
     private static void performBankAction(final Runnable action) {
         try {
             action.run();
@@ -50,7 +54,7 @@ public class SavingsAccount extends AbstractBankAccount {
         performBankAction(() -> acc.deposit(num1));
         performBankAction(() -> acc.deposit(0));
         performBankAction(() -> acc.withdraw(num2));
-        performBankAction(() -> acc.deposit(-num2));
+       performBankAction(() -> acc.deposit(-num2));
         performBankAction(() -> acc.withdraw(num3));
         performBankAction(() -> acc.withdraw(-num4));
         performBankAction(() -> acc.freezeAccount());
@@ -59,18 +63,19 @@ public class SavingsAccount extends AbstractBankAccount {
         performBankAction(() -> acc.unFreezeAccount());
         performBankAction(() -> acc.withdraw(num4));
         performBankAction(() -> acc.getBalance());
-        
         try {
-            List<Transaction> filtered = manager.filterTransactionsAbove(-num2, acc.getTransactionHistory());
+            List<Transaction> filtered = manager
+                    .filterTransactionsAbove(-num2, acc
+                            .getTransactionHistory());
             filtered.forEach(f -> System.out.println(f));
         } catch (InvalidAmountException e) {
             e.printStackTrace();
         }
-        System.out.println("----------------------------------------");
-        List<Transaction> sort = manager
-                .sortTransactionsByAmount(acc.getTransactionHistory());
-        sort.forEach(s -> System.out.println(s));
-        System.out.println("----------------------------------------");
+       System.out.println("----------------------------------------");
+       List<Transaction> sort = manager
+              .sortTransactionsByAmount(acc.getTransactionHistory());
+       sort.forEach(s -> System.out.println(s));
+       System.out.println("----------------------------------------");
         performBankAction(() -> manager.getAccount(2));
     }
 }
