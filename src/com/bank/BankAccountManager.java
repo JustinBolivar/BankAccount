@@ -60,10 +60,17 @@ public class BankAccountManager {
      * @return FilteredList of transactions
      */
     List<Transaction> filterTransactionsAbove(final double amount,
-            final List<Transaction> txList) {
-        return txList.stream()
-                .filter(tx -> tx.getAmount() >= amount)
-                .collect(Collectors.toList());
+            final List<Transaction> txList) throws InvalidAmountException {
+        if (amount <= 0) {
+            throw new InvalidAmountException(
+                    "The deposit amount must be a valid amount "
+                    + "greater than zero. Received: "
+                            + amount);
+        } else {
+            return txList.stream()
+                    .filter(tx -> tx.getAmount() >= amount)
+                    .collect(Collectors.toList());
+        } 
     }
     /**
      * sortTransactionsByAmount function to sort transaction list.

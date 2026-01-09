@@ -59,18 +59,18 @@ public class SavingsAccount extends AbstractBankAccount {
         performBankAction(() -> acc.unFreezeAccount());
         performBankAction(() -> acc.withdraw(num4));
         performBankAction(() -> acc.getBalance());
-
-        List<Transaction> filtered = manager.filterTransactionsAbove(num2,
-                acc.getTransactionHistory());
-        filtered.forEach(f -> System.out.println(f));
+        
+        try {
+            List<Transaction> filtered = manager.filterTransactionsAbove(-num2, acc.getTransactionHistory());
+            filtered.forEach(f -> System.out.println(f));
+        } catch (InvalidAmountException e) {
+            e.printStackTrace();
+        }
         System.out.println("----------------------------------------");
         List<Transaction> sort = manager
                 .sortTransactionsByAmount(acc.getTransactionHistory());
         sort.forEach(s -> System.out.println(s));
         System.out.println("----------------------------------------");
         performBankAction(() -> manager.getAccount(2));
-        manager.listAccounts();
-        
-        
     }
 }

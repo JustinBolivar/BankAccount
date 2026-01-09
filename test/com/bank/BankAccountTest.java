@@ -99,6 +99,21 @@ class BankAccountTest {
         Transaction tx = new Transaction("Deposit", 500.0);
         assertEquals("Deposit", tx.getType(), "Transaction type should match the input");
     }
+    
+    @Test
+    void testGetAccount_ValidId_ShouldReturnAccount() {
+        manager.addAccount(acc);
+        BankAccount retrievedAccount = manager.getAccount(1);
+        assertNotNull(retrievedAccount);
+    }
+    
+    @Test
+    void testGetAccount_InvalidId_ShouldThrowException() {
+        NullPointerException ex = assertThrows(NullPointerException.class, () -> {
+            manager.getAccount(999);
+        });
+        assertTrue(ex.getMessage().contains("Account not found for ID: 999"));
+    }
 
     @Test
     void testMain() {
